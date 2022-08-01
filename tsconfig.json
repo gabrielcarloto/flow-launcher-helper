@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "outDir": "./lib",
+    "target": "ES2018",
+    "module": "CommonJS",
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "declaration": true,
+    "strict": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

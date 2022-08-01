@@ -1,0 +1,41 @@
+{
+  "name": "flow-launcher-helper",
+  "version": "1.0.0",
+  "description": "A simple lib to help build plugins for Flow Launcher",
+  "main": "index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "eslint .",
+    "prepublishOnly": "npm run lint",
+    "prepare": "npm run build",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gabrielcarloto/flow-launcher-helper.git"
+  },
+  "keywords": [
+    "Flow Launcher"
+  ],
+  "author": "Gabriel Carloto",
+  "license": "MIT",
+  "files": [
+    "lib/**/*"
+  ],
+  "homepage": "https://github.com/gabrielcarloto/flow-launcher-helper",
+  "bugs": {
+    "url": "https://github.com/gabrielcarloto/flow-launcher-helper/issues"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.32.0",
+    "@typescript-eslint/parser": "^5.32.0",
+    "eslint": "^8.21.0",
+    "eslint-config-prettier": "^8.5.0",
+    "prettier": "^2.7.1",
+    "typescript": "^4.7.4"
+  }
+}
