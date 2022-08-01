@@ -1,6 +1,6 @@
 {
   "name": "flow-launcher-helper",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple lib to help build plugins for Flow Launcher",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
