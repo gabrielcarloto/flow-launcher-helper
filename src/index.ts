@@ -25,7 +25,7 @@ type Methods =
     };
 
 export interface JSONRPCResponse {
-  title?: string;
+  title: string;
   subtitle?: string;
   // eslint-disable-next-line @typescript-eslint/ban-types
   method?: Args['method'] | (string & {});
@@ -35,7 +35,7 @@ export interface JSONRPCResponse {
 
 interface Result {
   result: {
-    Title?: string;
+    Title: string;
     Subtitle?: string;
     JsonRPCAction: {
       // eslint-disable-next-line @typescript-eslint/ban-types
