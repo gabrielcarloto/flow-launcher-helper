@@ -13,7 +13,7 @@ npm install flow-launcher-helper
 I recommend you read the [Flow docs](https://www.flowlauncher.com/docs/#/nodejs-develop-plugins) before writing your plugin. This example is based on [their example](https://github.com/Flow-Launcher/Flow.Launcher.Plugin.HelloWorldNodeJS/blob/main/main.js).
 
 ```ts
-import flow from 'flow-launcher-helper';
+import { flow } from 'flow-launcher-helper';
 
 const { params, on, showResult, run } = flow();
 
