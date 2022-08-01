@@ -63,7 +63,7 @@ interface FlowReturn {
   run: () => void;
 }
 
-export default function flow(defaultIconPath?: string): FlowReturn {
+function flow(defaultIconPath?: string): FlowReturn {
   const { method, parameters }: Args = JSON.parse(process.argv[2]);
 
   const methods: Methods = {};
@@ -109,3 +109,5 @@ export default function flow(defaultIconPath?: string): FlowReturn {
     run,
   };
 }
+
+module.exports = flow;
