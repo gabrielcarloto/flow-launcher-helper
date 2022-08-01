@@ -2,7 +2,7 @@
   "name": "flow-launcher-helper",
   "version": "1.0.0",
   "description": "A simple lib to help build plugins for Flow Launcher",
-  "main": "index.js",
+  "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc",
