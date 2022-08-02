@@ -1,5 +1,12 @@
 # Changelog
 
+# 2.0.0
+
+## Added
+
+- The `flow` function is now a class `Flow`.
+- It is now possible to type the methods.
+
 # 1.1.0
 
 ## Added
