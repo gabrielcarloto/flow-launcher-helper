@@ -24,7 +24,8 @@
   "author": "Gabriel Carloto",
   "license": "MIT",
   "files": [
-    "lib/**/*"
+    "lib/**/*",
+    "README.md"
   ],
   "homepage": "https://github.com/gabrielcarloto/flow-launcher-helper",
   "bugs": {
