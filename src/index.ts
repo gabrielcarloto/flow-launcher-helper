@@ -46,14 +46,16 @@ interface Result {
   }[];
 }
 
-interface Args {
+interface Args<T = Record<string, string>> {
   method: keyof Methods;
   parameters: [string, boolean?] | [string, string, string];
+  settings: T;
 }
 
-interface FlowReturn {
+interface FlowReturn<T> {
   method: Args['method'];
   params: string;
+  settings: Args<T>['settings'];
   on: (
     // eslint-disable-next-line @typescript-eslint/ban-types
     method: Args['method'] | (string & {}),
@@ -63,8 +65,10 @@ interface FlowReturn {
   run: () => void;
 }
 
-export function flow(defaultIconPath?: string): FlowReturn {
-  const { method, parameters }: Args = JSON.parse(process.argv[2]);
+export function flow<T = Record<string, string>>(
+  defaultIconPath?: string,
+): FlowReturn<T> {
+  const { method, parameters, settings }: Args<T> = JSON.parse(process.argv[2]);
 
   const methods: Methods = {};
 
@@ -104,6 +108,7 @@ export function flow(defaultIconPath?: string): FlowReturn {
   return {
     method,
     params: parameters[0],
+    settings,
     on,
     showResult,
     run,
