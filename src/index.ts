@@ -16,73 +16,92 @@ type JSONRPCMethods =
   | 'Flow.Launcher.ReloadAllPluginData'
   | 'query';
 
-type Methods =
-  | {
-      [key in JSONRPCMethods]?: () => void;
-    }
-  | {
-      [key: string]: () => void;
-    };
+type Methods<T> = JSONRPCMethods | T;
 
-export interface JSONRPCResponse {
+type MethodsObj<T> = {
+  [key in Methods<T> extends string
+    ? Methods<T>
+    : // eslint-disable-next-line @typescript-eslint/ban-types
+      JSONRPCMethods | (string & {})]: () => void;
+};
+
+interface Data<TMethods, TSettings> {
+  method: keyof MethodsObj<TMethods>;
+  parameters: [string, boolean?] | [string, string, string];
+  settings: TSettings;
+}
+
+export interface JSONRPCResponse<TMethods, TSettings = Record<string, string>> {
   title: string;
   subtitle?: string;
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  method?: Args['method'] | (string & {});
-  params?: Args['parameters'];
+  method?: Data<TMethods, TSettings>['method'];
+  params?: Data<TMethods, TSettings>['parameters'];
   iconPath?: string;
 }
 
-interface Result {
+interface Result<TMethods, TSettings> {
   result: {
     Title: string;
     Subtitle?: string;
     JsonRPCAction: {
-      // eslint-disable-next-line @typescript-eslint/ban-types
-      method?: Args['method'] | (string & {});
-      parameters?: Args['parameters'];
+      method?: Data<TMethods, TSettings>['method'];
+      parameters?: Data<TMethods, TSettings>['parameters'];
     };
     IcoPath?: string;
   }[];
 }
 
-interface Args<T = Record<string, string>> {
-  method: keyof Methods;
-  parameters: [string, boolean?] | [string, string, string];
-  settings: T;
-}
-
-interface FlowReturn<T> {
-  method: Args['method'];
+interface IFlow<TMethods, TSettings> {
+  method: Data<TMethods, TSettings>['method'];
   params: string;
-  settings: Args<T>['settings'];
+  settings: TSettings;
   on: (
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    method: Args['method'] | (string & {}),
+    method: Data<TMethods, TSettings>['method'],
     callbackFn: () => void,
   ) => void;
-  showResult: (...result: JSONRPCResponse[]) => void;
+
+  showResult: (...result: JSONRPCResponse<TMethods, TSettings>[]) => void;
+
   run: () => void;
 }
 
-export function flow<T = Record<string, string>>(
-  defaultIconPath?: string,
-): FlowReturn<T> {
-  const { method, parameters, settings }: Args<T> = JSON.parse(process.argv[2]);
+export class Flow<TMethods, TSettings = Record<string, string>>
+  implements IFlow<TMethods, TSettings>
+{
+  private methods = {} as MethodsObj<TMethods>;
+  private defaultIconPath: string | undefined;
+  private readonly data: Data<TMethods, TSettings> = JSON.parse(
+    process.argv[2],
+  );
 
-  const methods: Methods = {};
-
-  function on(
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    method: Args['method'] | (string & {}),
-    callbackFn: () => void,
-  ) {
-    methods[method as keyof typeof methods] = callbackFn;
+  constructor(defaultIconPath?: string) {
+    this.defaultIconPath = defaultIconPath;
+    this.showResult = this.showResult.bind(this);
+    this.run = this.run.bind(this);
+    this.on = this.on.bind(this);
   }
 
-  function showResult(...result: JSONRPCResponse[]) {
-    const generateResult = (): Result => {
-      const results: Array<Result['result']['0']> = [];
+  get method() {
+    return this.data.method;
+  }
+
+  get params() {
+    return this.data.parameters[0];
+  }
+
+  get settings() {
+    return this.data.settings;
+  }
+
+  public on(method: keyof MethodsObj<TMethods>, callbackFn: () => void) {
+    this.methods[method] = callbackFn;
+  }
+
+  public showResult(...result: JSONRPCResponse<TMethods, TSettings>[]) {
+    type GenerateResult = Result<TMethods, TSettings>;
+
+    const generateResult = (): GenerateResult => {
+      const results: Array<GenerateResult['result']['0']> = [];
 
       for (const r of result) {
         results.push({
@@ -92,7 +111,7 @@ export function flow<T = Record<string, string>>(
             method: r.method,
             parameters: r.params,
           },
-          IcoPath: r.iconPath || defaultIconPath,
+          IcoPath: r.iconPath || this.defaultIconPath,
         });
       }
 
@@ -102,15 +121,7 @@ export function flow<T = Record<string, string>>(
     return console.log(JSON.stringify(generateResult()));
   }
 
-  // @ts-expect-error -> expect error because the `methods` object is empty by default, but will have methods when the `on` function is called; also, the `run` function already checks if the method exists in the `methods` object
-  const run = () => method in methods && methods[method]();
-
-  return {
-    method,
-    params: parameters[0],
-    settings,
-    on,
-    showResult,
-    run,
-  };
+  public run() {
+    this.data.method in this.methods && this.methods[this.data.method]();
+  }
 }
