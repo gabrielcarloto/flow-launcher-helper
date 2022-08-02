@@ -45,6 +45,22 @@ run();
 
 - `method` — `string`: current method.
 - `params` — `string`: current parameters.
+- `settings` — `object`: plugin settings. You can add a type to the `flow` function, like this:
+
+  ##### Example
+
+  ```ts
+  interface Settings {
+    username: string;
+    api_token: string;
+  }
+
+  const { settings } = flow<Settings>()
+
+  console.log(settings.username) // ✅
+  console.log(settings.name) // ❌ Property 'name' does not exist on type 'Settings'
+  ```
+
 - `on` — `function`: receives a method (string) and a callback function that will be executed when the method matches the current method.
 - `showResult` — `function`: receives an array of results, where you specify the title, subtitle, method, params and icon path, and logs the data to be displayed in Flow.
 - `run` — `function`: runs the current method. You should call this function at the end of your script, or after all the `on` functions have been called.
