@@ -1,5 +1,11 @@
 # Changelog
 
+# 1.1.0
+
+## Added
+
+- Support for plugin settings
+
 ## 1.0.2
 
 ### Fixed
