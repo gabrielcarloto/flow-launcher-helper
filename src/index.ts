@@ -14,6 +14,7 @@ type JSONRPCMethods =
   | 'Flow.Launcher.StartLoadingBar'
   | 'Flow.Launcher.StopLoadingBar'
   | 'Flow.Launcher.ReloadAllPluginData'
+  | 'Flow.Launcher.CopyToClipboard'
   | 'query';
 
 type Methods<T> = JSONRPCMethods | T;
@@ -61,7 +62,12 @@ interface IFlow<TMethods, TSettings> {
   ) => void;
 
   showResult: (...result: JSONRPCResponse<TMethods, TSettings>[]) => void;
-
+  copyToClipboard: (
+    title: string,
+    text: string,
+    subtitle?: string,
+    iconPath?: string,
+  ) => void;
   run: () => void;
 }
 
@@ -119,6 +125,21 @@ export class Flow<TMethods, TSettings = Record<string, string>>
     };
 
     return console.log(JSON.stringify(generateResult()));
+  }
+
+  public copyToClipboard(
+    title: string,
+    text: string,
+    subtitle?: string,
+    iconPath?: string,
+  ) {
+    this.showResult({
+      title,
+      subtitle,
+      method: 'Flow.Launcher.CopyToClipboard',
+      params: [text],
+      iconPath,
+    });
   }
 
   public run() {
