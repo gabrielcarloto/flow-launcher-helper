@@ -81,6 +81,12 @@ export class Flow<TMethods, TSettings = Record<string, string>>
     process.argv[2],
   );
 
+  /**
+   * Creates an instance of Flow.
+   *
+   * @constructor
+   * @param {?string} [defaultIconPath] Sets the default icon path to be displayed in all results.
+   */
   constructor(defaultIconPath?: string) {
     this.defaultIconPath = defaultIconPath;
     this.showResult = this.showResult.bind(this);
@@ -88,29 +94,54 @@ export class Flow<TMethods, TSettings = Record<string, string>>
     this.on = this.on.bind(this);
   }
 
+  /**
+   * @readonly
+   * @type {keyof MethodsObj<TMethods>}
+   */
   get method() {
     return this.data.method;
   }
 
+  /**
+   * @readonly
+   * @type {string}
+   */
   get params() {
     return this.data.parameters[0] as string;
   }
 
+  /**
+   * @readonly
+   * @type {TSettings}
+   */
   get settings() {
     return this.data.settings;
   }
 
+  /**
+   * Registers a method and the function that will run when this method is sent from Flow.
+   *
+   * @public
+   * @param {keyof MethodsObj<TMethods>} method
+   * @param {() => void} callbackFn
+   */
   public on(method: keyof MethodsObj<TMethods>, callbackFn: () => void) {
     this.methods[method] = callbackFn;
   }
 
-  public showResult(...result: JSONRPCResponse<TMethods>[]) {
+  /**
+   * Sends the data to be displayed in Flow Launcher.
+   *
+   * @public
+   * @param {...JSONRPCResponse<TMethods>[]} resultsArray Array with all the results objects.
+   */
+  public showResult(...resultsArray: JSONRPCResponse<TMethods>[]) {
     type GenerateResult = Result<TMethods>;
 
     const generateResult = (): GenerateResult => {
       const results: Array<GenerateResult['result']['0']> = [];
 
-      for (const r of result) {
+      for (const r of resultsArray) {
         results.push({
           Title: r.title,
           Subtitle: r.subtitle,
@@ -128,6 +159,15 @@ export class Flow<TMethods, TSettings = Record<string, string>>
     return console.log(JSON.stringify(generateResult()));
   }
 
+  /**
+   * Copy text to clipboard.
+   *
+   * @public
+   * @param {string} title The title that will be displayed in the result.
+   * @param {string} text The text that will be copied to the clipboard.
+   * @param {?string} [subtitle] The subtitle that will be displayed in the result.
+   * @param {?string} [iconPath] The icon that will be displayed in the result.
+   */
   public copyToClipboard(
     title: string,
     text: string,
@@ -143,6 +183,11 @@ export class Flow<TMethods, TSettings = Record<string, string>>
     });
   }
 
+  /**
+   * Runs the function for the current method. Should be called at the end of your script, or after all the `on()` functions have been called.
+   *
+   * @public
+   */
   public run() {
     this.data.method in this.methods && this.methods[this.data.method]();
   }
