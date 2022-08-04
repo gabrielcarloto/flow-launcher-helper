@@ -26,48 +26,49 @@ type MethodsObj<T> = {
       JSONRPCMethods | (string & {})]: () => void;
 };
 
+type Method<T> = keyof MethodsObj<T>;
+type Parameters = [string, boolean?] | [string, string, string] | [];
+
 interface Data<TMethods, TSettings> {
-  method: keyof MethodsObj<TMethods>;
-  parameters: [string, boolean?] | [string, string, string] | [];
+  method: Method<TMethods>;
+  parameters: Parameters;
   settings: TSettings;
 }
 
-export interface JSONRPCResponse<TMethods, TSettings = Record<string, string>> {
+export interface JSONRPCResponse<TMethods> {
   title: string;
   subtitle?: string;
-  method?: Data<TMethods, TSettings>['method'];
-  params?: Data<TMethods, TSettings>['parameters'];
+  method?: Method<TMethods>;
+  params?: Parameters;
   iconPath?: string;
 }
 
-interface Result<TMethods, TSettings> {
+interface Result<TMethods> {
   result: {
     Title: string;
     Subtitle?: string;
     JsonRPCAction: {
-      method?: Data<TMethods, TSettings>['method'];
-      parameters?: Data<TMethods, TSettings>['parameters'];
+      method?: Method<TMethods>;
+      parameters?: Parameters;
     };
     IcoPath?: string;
   }[];
 }
 
 interface IFlow<TMethods, TSettings> {
-  method: Data<TMethods, TSettings>['method'];
+  method: Method<TMethods>;
   params: string;
   settings: TSettings;
-  on: (
-    method: Data<TMethods, TSettings>['method'],
-    callbackFn: () => void,
-  ) => void;
+  on: (method: Method<TMethods>, callbackFn: () => void) => void;
+  showResult: (...result: JSONRPCResponse<TMethods>[]) => void;
 
-  showResult: (...result: JSONRPCResponse<TMethods, TSettings>[]) => void;
   copyToClipboard: (
     title: string,
     text: string,
     subtitle?: string,
     iconPath?: string,
   ) => void;
+
   run: () => void;
 }
 
@@ -103,8 +104,8 @@ export class Flow<TMethods, TSettings = Record<string, string>>
     this.methods[method] = callbackFn;
   }
 
-  public showResult(...result: JSONRPCResponse<TMethods, TSettings>[]) {
-    type GenerateResult = Result<TMethods, TSettings>;
+  public showResult(...result: JSONRPCResponse<TMethods>[]) {
+    type GenerateResult = Result<TMethods>;
 
     const generateResult = (): GenerateResult => {
       const results: Array<GenerateResult['result']['0']> = [];
