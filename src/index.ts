@@ -28,7 +28,7 @@ type MethodsObj<T> = {
 
 interface Data<TMethods, TSettings> {
   method: keyof MethodsObj<TMethods>;
-  parameters: [string, boolean?] | [string, string, string];
+  parameters: [string, boolean?] | [string, string, string] | [];
   settings: TSettings;
 }
 
@@ -92,7 +92,7 @@ export class Flow<TMethods, TSettings = Record<string, string>>
   }
 
   get params() {
-    return this.data.parameters[0];
+    return this.data.parameters[0] as string;
   }
 
   get settings() {
@@ -115,7 +115,7 @@ export class Flow<TMethods, TSettings = Record<string, string>>
           Subtitle: r.subtitle,
           JsonRPCAction: {
             method: r.method,
-            parameters: r.params,
+            parameters: r.params || [],
           },
           IcoPath: r.iconPath || this.defaultIconPath,
         });
