@@ -52,20 +52,6 @@ export interface JSONRPCResponse<TMethods> {
   score?: number;
 }
 
-interface Result<TMethods> {
-  result: {
-    Title: string;
-    Subtitle?: string;
-    JsonRPCAction: {
-      method?: Method<TMethods>;
-      parameters?: Parameters;
-      dontHideAfterAction: boolean;
-    };
-    IcoPath?: string;
-    score: number;
-  }[];
-}
-
 interface IFlow<TMethods, TSettings> {
   method: Method<TMethods>;
   params: string;
@@ -139,29 +125,21 @@ export class Flow<TMethods, TSettings = Record<string, string>>
    * @param {...JSONRPCResponse<TMethods>[]} resultsArray Array with all the results objects.
    */
   public showResult(...resultsArray: JSONRPCResponse<TMethods>[]) {
-    type GenerateResult = Result<TMethods>;
+    const result = resultsArray.map((r) => {
+      return {
+        Title: r.title,
+        Subtitle: r.subtitle,
+        JsonRPCAction: {
+          method: r.method,
+          parameters: r.params || [],
+          dontHideAfterAction: r.dontHideAfterAction || false,
+        },
+        IcoPath: r.iconPath || this.defaultIconPath,
+        score: r.score || 0,
+      };
+    });
 
-    const generateResult = (): GenerateResult => {
-      const results: Array<GenerateResult['result']['0']> = [];
-
-      for (const r of resultsArray) {
-        results.push({
-          Title: r.title,
-          Subtitle: r.subtitle,
-          JsonRPCAction: {
-            method: r.method,
-            parameters: r.params || [],
-            dontHideAfterAction: r.dontHideAfterAction || false,
-          },
-          IcoPath: r.iconPath || this.defaultIconPath,
-          score: r.score || 0,
-        });
-      }
-
-      return { result: results };
-    };
-
-    return console.log(JSON.stringify(generateResult()));
+    return console.log(JSON.stringify({ result }));
   }
 
   /**
