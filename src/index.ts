@@ -26,8 +26,15 @@ type MethodsObj<T> = {
       JSONRPCMethods | (string & {})]: () => void;
 };
 
+type ParametersAllowedTypes =
+  | string
+  | number
+  | boolean
+  | Record<string, unknown>
+  | ParametersAllowedTypes[];
+
 type Method<T> = keyof MethodsObj<T>;
-type Parameters = [string, boolean?] | [string, string, string] | [];
+type Parameters = ParametersAllowedTypes[];
 
 interface Data<TMethods, TSettings> {
   method: Method<TMethods>;
