@@ -47,6 +47,7 @@ export interface JSONRPCResponse<TMethods> {
   subtitle?: string;
   method?: Method<TMethods>;
   params?: Parameters;
+  dontHideAfterAction?: boolean;
   iconPath?: string;
   score?: number;
 }
@@ -58,6 +59,7 @@ interface Result<TMethods> {
     JsonRPCAction: {
       method?: Method<TMethods>;
       parameters?: Parameters;
+      dontHideAfterAction: boolean;
     };
     IcoPath?: string;
     score: number;
@@ -70,14 +72,6 @@ interface IFlow<TMethods, TSettings> {
   settings: TSettings;
   on: (method: Method<TMethods>, callbackFn: () => void) => void;
   showResult: (...result: JSONRPCResponse<TMethods>[]) => void;
-
-  copyToClipboard: (
-    title: string,
-    text: string,
-    subtitle?: string,
-    iconPath?: string,
-  ) => void;
-
   run: () => void;
 }
 
@@ -157,6 +151,7 @@ export class Flow<TMethods, TSettings = Record<string, string>>
           JsonRPCAction: {
             method: r.method,
             parameters: r.params || [],
+            dontHideAfterAction: r.dontHideAfterAction || false,
           },
           IcoPath: r.iconPath || this.defaultIconPath,
           score: r.score || 0,
@@ -167,30 +162,6 @@ export class Flow<TMethods, TSettings = Record<string, string>>
     };
 
     return console.log(JSON.stringify(generateResult()));
-  }
-
-  /**
-   * Copy text to clipboard.
-   *
-   * @public
-   * @param {string} title The title that will be displayed in the result.
-   * @param {string} text The text that will be copied to the clipboard.
-   * @param {?string} [subtitle] The subtitle that will be displayed in the result.
-   * @param {?string} [iconPath] The icon that will be displayed in the result.
-   */
-  public copyToClipboard(
-    title: string,
-    text: string,
-    subtitle?: string,
-    iconPath?: string,
-  ) {
-    this.showResult({
-      title,
-      subtitle,
-      method: 'Flow.Launcher.CopyToClipboard',
-      params: [text],
-      iconPath,
-    });
   }
 
   /**
