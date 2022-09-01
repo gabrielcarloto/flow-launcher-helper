@@ -48,6 +48,7 @@ export interface JSONRPCResponse<TMethods> {
   method?: Method<TMethods>;
   params?: Parameters;
   iconPath?: string;
+  score?: number;
 }
 
 interface Result<TMethods> {
@@ -59,6 +60,7 @@ interface Result<TMethods> {
       parameters?: Parameters;
     };
     IcoPath?: string;
+    score: number;
   }[];
 }
 
@@ -157,6 +159,7 @@ export class Flow<TMethods, TSettings = Record<string, string>>
             parameters: r.params || [],
           },
           IcoPath: r.iconPath || this.defaultIconPath,
+          score: r.score || 0,
         });
       }
 
