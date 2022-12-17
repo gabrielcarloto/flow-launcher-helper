@@ -127,11 +127,11 @@ export class Flow<TMethods, TSettings = Record<string, string>>
   }
 
   /**
-   * Registers a method and the function that will run when this method is sent from Flow.
+   * Registers a method and the callback function that will run when this method is sent from Flow Launcher.
    *
    * @public
-   * @param {keyof MethodsObj<TMethods>} method
-   * @param {() => void} callbackFn
+   * @param method The method to register.
+   * @param callbackFn Receives the params as an argument.
    */
   public on(
     method: keyof MethodsObj<TMethods>,
@@ -140,6 +140,11 @@ export class Flow<TMethods, TSettings = Record<string, string>>
     this.methods[method] = callbackFn;
   }
 
+  /**
+   * Takes a JSONRPCResponse object and returns a Result object
+   *
+   * @private
+   */
   private createResultObject(
     result: JSONRPCResponse<TMethods>,
   ): Result<TMethods> {
