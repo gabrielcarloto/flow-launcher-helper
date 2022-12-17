@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.2.0
+
+### Added
+
+- Now you can access the params used in a method directly from the callback function (`on('method', (params) => ...)`).
+- When a method that does not exist is called, an error will be thrown, indicating the misspelled method.
+
 ## 2.1.0
 
 ### Added
