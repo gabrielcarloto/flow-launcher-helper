@@ -97,6 +97,7 @@ export class Flow<TMethods, TSettings = Record<string, string>>
    */
   constructor(defaultIconPath?: string) {
     this.defaultIconPath = defaultIconPath;
+    this.createResultObject = this.createResultObject.bind(this);
     this.showResult = this.showResult.bind(this);
     this.run = this.run.bind(this);
     this.on = this.on.bind(this);
