@@ -155,6 +155,7 @@ export class Flow<TMethods, TSettings = Record<string, string>>
    * @public
    */
   public run() {
-    this.data.method in this.methods && this.methods[this.data.method]();
+    if (this.data.method in this.methods) this.methods[this.data.method]();
+    else throw new Error(`Method ${this.data.method} is not defined.`);
   }
 }
