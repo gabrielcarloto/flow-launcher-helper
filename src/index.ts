@@ -61,6 +61,13 @@ interface IFlow<TMethods, TSettings> {
   run: () => void;
 }
 
+/**
+ * A class that helps in the communication between the Flow Launcher app and a plugin.
+ *
+ * @class Flow
+ * @template TMethods - The type that defines the custom methods for the plugin.
+ * @template TSettings - The type that defines the plugin's settings.
+ */
 export class Flow<TMethods, TSettings = Record<string, string>>
   implements IFlow<TMethods, TSettings>
 {
@@ -74,7 +81,7 @@ export class Flow<TMethods, TSettings = Record<string, string>>
    * Creates an instance of Flow.
    *
    * @constructor
-   * @param {?string} [defaultIconPath] Sets the default icon path to be displayed in all results.
+   * @param {?string} [defaultIconPath] Sets the default icon path.
    */
   constructor(defaultIconPath?: string) {
     this.defaultIconPath = defaultIconPath;
@@ -124,7 +131,7 @@ export class Flow<TMethods, TSettings = Record<string, string>>
    * @public
    * @param {...JSONRPCResponse<TMethods>[]} resultsArray Array with all the results objects.
    */
-  public showResult(...resultsArray: JSONRPCResponse<TMethods>[]) {
+  public showResult(...resultsArray: JSONRPCResponse<TMethods>[]): void {
     const result = resultsArray.map((r) => {
       return {
         Title: r.title,
@@ -139,7 +146,7 @@ export class Flow<TMethods, TSettings = Record<string, string>>
       };
     });
 
-    return console.log(JSON.stringify({ result }));
+    console.log(JSON.stringify({ result }));
   }
 
   /**
