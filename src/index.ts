@@ -52,12 +52,24 @@ export interface JSONRPCResponse<TMethods> {
   score?: number;
 }
 
+interface Result<TMethods> {
+  Title: string;
+  Subtitle?: string;
+  JsonRPCAction: {
+    method?: Method<TMethods>;
+    parameters: Parameters;
+    dontHideAfterAction: boolean;
+  };
+  IcoPath?: string;
+  score: number;
+}
+
 interface IFlow<TMethods, TSettings> {
   method: Method<TMethods>;
   params: string;
   settings: TSettings;
   on: (method: Method<TMethods>, callbackFn: () => void) => void;
-  showResult: (...result: JSONRPCResponse<TMethods>[]) => void;
+  showResult: (...results: JSONRPCResponse<TMethods>[]) => void;
   run: () => void;
 }
 
@@ -125,27 +137,30 @@ export class Flow<TMethods, TSettings = Record<string, string>>
     this.methods[method] = callbackFn;
   }
 
+  private createResultObject(
+    result: JSONRPCResponse<TMethods>,
+  ): Result<TMethods> {
+    return {
+      Title: result.title,
+      Subtitle: result.subtitle,
+      JsonRPCAction: {
+        method: result.method,
+        parameters: result.params || [],
+        dontHideAfterAction: result.dontHideAfterAction || false,
+      },
+      IcoPath: result.iconPath || this.defaultIconPath,
+      score: result.score || 0,
+    };
+  }
+
   /**
    * Sends the data to be displayed in Flow Launcher.
    *
    * @public
-   * @param {...JSONRPCResponse<TMethods>[]} resultsArray Array with all the results objects.
+   * @param resultsArray Array with all the results objects.
    */
-  public showResult(...resultsArray: JSONRPCResponse<TMethods>[]): void {
-    const result = resultsArray.map((r) => {
-      return {
-        Title: r.title,
-        Subtitle: r.subtitle,
-        JsonRPCAction: {
-          method: r.method,
-          parameters: r.params || [],
-          dontHideAfterAction: r.dontHideAfterAction || false,
-        },
-        IcoPath: r.iconPath || this.defaultIconPath,
-        score: r.score || 0,
-      };
-    });
-
+  public showResult(...resultsArray: JSONRPCResponse<TMethods>[]) {
+    const result = resultsArray.map(this.createResultObject);
     console.log(JSON.stringify({ result }));
   }
 
