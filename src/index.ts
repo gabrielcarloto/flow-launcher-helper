@@ -23,7 +23,7 @@ type MethodsObj<T> = {
   [key in Methods<T> extends string
     ? Methods<T>
     : // eslint-disable-next-line @typescript-eslint/ban-types
-      JSONRPCMethods | (string & {})]: () => void;
+      JSONRPCMethods | (string & {})]: (params: string) => void;
 };
 
 type ParametersAllowedTypes =
@@ -68,7 +68,7 @@ interface IFlow<TMethods, TSettings> {
   method: Method<TMethods>;
   params: string;
   settings: TSettings;
-  on: (method: Method<TMethods>, callbackFn: () => void) => void;
+  on: (method: Method<TMethods>, callbackFn: (params: string) => void) => void;
   showResult: (...results: JSONRPCResponse<TMethods>[]) => void;
   run: () => void;
 }
@@ -133,7 +133,10 @@ export class Flow<TMethods, TSettings = Record<string, string>>
    * @param {keyof MethodsObj<TMethods>} method
    * @param {() => void} callbackFn
    */
-  public on(method: keyof MethodsObj<TMethods>, callbackFn: () => void) {
+  public on(
+    method: keyof MethodsObj<TMethods>,
+    callbackFn: (params: string) => void,
+  ) {
     this.methods[method] = callbackFn;
   }
 
@@ -170,7 +173,8 @@ export class Flow<TMethods, TSettings = Record<string, string>>
    * @public
    */
   public run() {
-    if (this.data.method in this.methods) this.methods[this.data.method]();
+    if (this.data.method in this.methods)
+      this.methods[this.data.method](this.params);
     else throw new Error(`Method ${this.data.method} is not defined.`);
   }
 }
