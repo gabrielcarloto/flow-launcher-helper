@@ -3,7 +3,7 @@ import {
   IFlow,
   JSONRPCResponse,
   MethodsObj,
-  Parameters,
+  Params,
   ParametersAllowedTypes,
   Result,
 } from './types';
@@ -62,7 +62,7 @@ class Flow<TMethods, TSettings = Record<string, string>>
     const firstParam = this.data.parameters[0];
     const hasJustOneItem = this.data.parameters.length == 1;
 
-    if (hasJustOneItem && isPrimitive(firstParam)) return firstParam;
+    if (hasJustOneItem && isPrimitive(firstParam)) return firstParam as Params;
 
     return this.data.parameters;
   }
@@ -78,12 +78,13 @@ class Flow<TMethods, TSettings = Record<string, string>>
    * Registers a method and the callback function that will run when this method is sent from Flow Launcher.
    *
    * @public
+   * @template T - The type that defines the params for the passed method. If you want it to be an object, it won't work if you pass an interface, just with arrays of types.
    * @param method The method to register.
    * @param callbackFn Receives the params as an argument.
    */
-  public on(
+  public on<T extends Params>(
     method: keyof MethodsObj<TMethods>,
-    callbackFn: (params: Parameters | ParametersAllowedTypes) => void,
+    callbackFn: (params: T) => void,
   ) {
     this.methods[method] = callbackFn;
   }
@@ -131,5 +132,3 @@ class Flow<TMethods, TSettings = Record<string, string>>
     else throw new Error(`Method ${this.data.method} is not defined.`);
   }
 }
-
-export { Flow, JSONRPCResponse };

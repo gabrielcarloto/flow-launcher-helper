@@ -25,13 +25,11 @@ export type JSONRPCMethods = FlowLauncherInternMethods | 'query';
 
 export type Methods<T> = JSONRPCMethods | T;
 
-export type MethodsObj<T> = {
-  [key in Methods<T> extends string
-    ? Methods<T>
+export type MethodsObj<TMethods> = {
+  [key in Methods<TMethods> extends string
+    ? Methods<TMethods>
     : // eslint-disable-next-line @typescript-eslint/ban-types
-      JSONRPCMethods | (string & {})]: (
-    params: Parameters | ParametersAllowedTypes,
-  ) => void;
+      JSONRPCMethods | (string & {})]: (params: any) => void; // TODO: remove any
 };
 
 export type ParametersAllowedTypes =
@@ -42,11 +40,12 @@ export type ParametersAllowedTypes =
   | ParametersAllowedTypes[];
 
 export type Method<T> = keyof MethodsObj<T>;
-export type Parameters = ParametersAllowedTypes[];
+export type FlowParameters = ParametersAllowedTypes[];
+export type Params = FlowParameters | string | number | boolean;
 
 export interface Data<TMethods, TSettings> {
   method: Method<TMethods>;
-  parameters: Parameters;
+  parameters: FlowParameters;
   settings: TSettings;
 }
 
@@ -54,7 +53,7 @@ export interface JSONRPCResponse<TMethods> {
   title: string;
   subtitle?: string;
   method?: Method<TMethods>;
-  params?: Parameters;
+  params?: FlowParameters;
   dontHideAfterAction?: boolean;
   iconPath?: string;
   score?: number;
@@ -65,7 +64,7 @@ export interface Result<TMethods> {
   Subtitle?: string;
   JsonRPCAction: {
     method?: Method<TMethods>;
-    parameters: Parameters;
+    parameters: FlowParameters;
     dontHideAfterAction: boolean;
   };
   IcoPath?: string;
@@ -75,14 +74,15 @@ export interface Result<TMethods> {
 export type ShowResult<TMethods> = (
   ...results: JSONRPCResponse<TMethods>[]
 ) => void;
+
 export type On<TMethods> = (
   method: Method<TMethods>,
-  callbackFn: (params: Parameters | ParametersAllowedTypes) => void,
+  callbackFn: (params: Params) => void,
 ) => void;
 
 export interface IFlow<TMethods, TSettings> {
   method: Method<TMethods>;
-  params: Parameters | ParametersAllowedTypes;
+  params: Params;
   settings: TSettings;
   on: On<TMethods>;
   showResult: ShowResult<TMethods>;

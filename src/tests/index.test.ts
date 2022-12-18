@@ -1,20 +1,14 @@
 import rewire from 'rewire';
 import { expect } from 'chai';
-import { spy, assert, match } from 'sinon';
+import { spy, assert } from 'sinon';
 
 import { DEFAULT_REQUEST, mockRequest, RequestObject } from './mock';
-import {
-  IFlowPrivate,
-  JSONRPCResponse,
-  Parameters,
-  ParametersAllowedTypes,
-  Result,
-} from '../types';
+import { IFlowPrivate, JSONRPCResponse, Params, Result } from '../types';
 import { stub } from 'sinon';
 
 interface TestParamsArgs {
   request: RequestObject;
-  expected: Parameters | ParametersAllowedTypes;
+  expected: Params;
 }
 
 type TRewiredFlow = IFlowPrivate<unknown, unknown>;

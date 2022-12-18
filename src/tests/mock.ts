@@ -1,4 +1,4 @@
-import { Result, Parameters } from '../types';
+import { Result, FlowParameters } from '../types';
 import rewire from 'rewire';
 
 export const DEFAULT_REQUEST = {
@@ -8,7 +8,7 @@ export const DEFAULT_REQUEST = {
 
 export interface RequestObject {
   method: string;
-  parameters: Parameters;
+  parameters: FlowParameters;
   settings?: Record<string, string | number | boolean>;
 }
 
