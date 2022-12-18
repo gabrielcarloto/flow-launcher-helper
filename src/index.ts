@@ -135,9 +135,9 @@ export class Flow<TMethods, TSettings = Record<string, string>>
    */
   get params() {
     const firstParam = this.data.parameters[0];
-    const secondParam = this.data.parameters[1];
+    const hasJustOneItem = this.data.parameters.length == 1;
 
-    if (!secondParam && isPrimitive(firstParam)) return firstParam;
+    if (hasJustOneItem && isPrimitive(firstParam)) return firstParam;
 
     return this.data.parameters;
   }
