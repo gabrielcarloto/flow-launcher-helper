@@ -111,7 +111,7 @@ export class Flow<TMethods, TSettings = Record<string, string>>
    * Creates an instance of Flow.
    *
    * @constructor
-   * @param {?string} [defaultIconPath] Sets the default icon path.
+   * @param defaultIconPath Sets the default icon path.
    */
   constructor(defaultIconPath?: string) {
     this.defaultIconPath = defaultIconPath;
@@ -123,7 +123,6 @@ export class Flow<TMethods, TSettings = Record<string, string>>
 
   /**
    * @readonly
-   * @type {keyof MethodsObj<TMethods>}
    */
   get method() {
     return this.data.method;
@@ -133,7 +132,6 @@ export class Flow<TMethods, TSettings = Record<string, string>>
    * If the first parameter is a primitive type, return it, otherwise return the entire array of parameters.
    *
    * @readonly
-   * @type {Parameters | ParametersAllowedTypes}
    */
   get params() {
     const firstParam = this.data.parameters[0];
@@ -146,7 +144,6 @@ export class Flow<TMethods, TSettings = Record<string, string>>
 
   /**
    * @readonly
-   * @type {TSettings}
    */
   get settings() {
     return this.data.settings;
