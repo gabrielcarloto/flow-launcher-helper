@@ -1,110 +1,72 @@
-import { test } from 'mocha';
-import { spy, assert } from 'sinon';
+import rewire from 'rewire';
 import { expect } from 'chai';
+import { spy, assert } from 'sinon';
 
-import { Flow } from '../index';
-import { DEFAULT_REQUEST, mockArgv, RequestObject } from './mock';
+import { DEFAULT_REQUEST, mockRequest, RequestObject } from './mock';
 
-type Methods = unknown;
+describe('Flow Launcher Helper', () => {
+  let rewiredModule: ReturnType<typeof rewire>, rewiredFlow: any;
 
-describe('Methods and params', () => {
-  const originalArgv = process.argv;
-
-  afterEach(() => {
-    process.argv = originalArgv;
+  beforeEach(() => {
+    rewiredModule = rewire('../index');
+    rewiredFlow = rewiredModule.__get__('Flow');
   });
 
-  const testMethod = (mock: RequestObject) => {
-    mockArgv(mock);
-    const callback = spy();
-    const { method, params, on, run } = new Flow<Methods>();
+  it('should return the correct parameters', () => {
+    const testParams = (request: RequestObject) => {
+      mockRequest(request, rewiredModule);
+      const flow = new rewiredFlow();
+      const callback = spy();
 
-    on(mock.method, callback);
-    run();
+      flow.on(request.method, callback);
+      flow.run();
 
-    expect(method).to.be.equal(mock.method);
-    expect(run).to.not.throw();
+      const params = callback.args[0][0];
 
-    if (Array.isArray(params)) {
-      expect(params).to.have.deep.members(mock.parameters);
-      expect(callback.args[0][0]).to.have.deep.members(mock.parameters);
-    } else {
-      expect(params).to.be.equal(mock.parameters[0]);
-      expect(callback.args[0][0]).to.be.equal(mock.parameters[0]);
-    }
-  };
+      expect(params).to.eql(
+        Array.isArray(params) ? request.parameters : request.parameters[0],
+      );
+    };
 
-  describe('`params` and `method` should be equal to the ones passed in argv', () => {
-    test('when the passed parameter is just a string', () => {
-      const mock = {
-        method: 'just_testing_method',
-        parameters: ['just_testing_params'],
-      };
-
-      testMethod(mock);
-    });
-
-    test('when the passed parameter is just a boolean', () => {
-      const mock = {
-        method: 'just_testing_method',
-        parameters: [true],
-      };
-
-      testMethod(mock);
-    });
-
-    test('when the passed parameter is just a number', () => {
-      const mock = {
-        method: 'just_testing_method',
-        parameters: [42],
-      };
-
-      testMethod(mock);
-    });
-
-    test('when the passed parameter is an object', () => {
-      const mock = {
-        method: 'just_testing_method',
-        parameters: [{ testing: 'object', object: { test: 42 } }],
-      };
-
-      testMethod(mock);
-    });
-
-    test('with more then one parameter', () => {
-      const mock = {
-        method: 'just_testing_method',
-        parameters: [
-          'string',
-          42,
-          { testing: 'object', object: { test: 42 } },
-          [85, 36, 42],
-        ],
-      };
-
-      testMethod(mock);
+    testParams({ method: 'query', parameters: ['param1'] });
+    testParams({ method: 'query', parameters: [10] });
+    testParams({ method: 'query', parameters: [true] });
+    testParams({
+      method: 'another_method',
+      parameters: [
+        42,
+        { param: 'test', another: ['test', 'param1'] },
+        'param2',
+      ],
     });
   });
 
   it('should call the callback function once', () => {
-    mockArgv(DEFAULT_REQUEST);
-    const { on, run } = new Flow();
-
+    mockRequest(DEFAULT_REQUEST, rewiredModule);
+    const flow = new rewiredFlow();
     const callback = spy();
-    on(DEFAULT_REQUEST.method, callback);
 
-    run();
+    flow.on(DEFAULT_REQUEST.method, callback);
+    flow.run();
+
     expect(callback.calledOnce).to.be.true;
   });
 
   it('should throw an error when the requested method does not exist', () => {
-    mockArgv({ method: 'i_dont_exist', parameters: [''] });
-    const { on, run } = new Flow();
+    mockRequest(
+      {
+        method: 'i_dont_exist',
+        parameters: [''],
+      },
+      rewiredModule,
+    );
+
+    const flow = new rewiredFlow();
     const callback = spy();
 
-    on('query', callback);
+    flow.on('query', callback);
 
     assert.notCalled(callback);
-    expect(run).to.throw();
+    expect(flow.run).to.throw();
   });
 });

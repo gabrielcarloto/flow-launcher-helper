@@ -1,4 +1,5 @@
 import { Result, Parameters } from '../index';
+import rewire from 'rewire';
 
 export const DEFAULT_REQUEST = {
   method: 'query',
@@ -10,9 +11,12 @@ export interface RequestObject {
   parameters: Parameters;
 }
 
-export function mockArgv(requestObject: RequestObject) {
-  process.argv[2] = JSON.stringify(requestObject);
-  return process.argv;
+export function mockRequest(
+  requestObject: RequestObject,
+  rewiredModule: ReturnType<typeof rewire>,
+) {
+  const mock = JSON.stringify(requestObject);
+  rewiredModule.__set__({ process: { argv: ['-', '-', mock] } });
 }
 
 export function simulateFlowLauncherRequest(
