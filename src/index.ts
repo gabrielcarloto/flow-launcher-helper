@@ -23,7 +23,9 @@ type MethodsObj<T> = {
   [key in Methods<T> extends string
     ? Methods<T>
     : // eslint-disable-next-line @typescript-eslint/ban-types
-      JSONRPCMethods | (string & {})]: (params: string) => void;
+      JSONRPCMethods | (string & {})]: (
+    params: Parameters | ParametersAllowedTypes,
+  ) => void;
 };
 
 type ParametersAllowedTypes =
@@ -33,8 +35,8 @@ type ParametersAllowedTypes =
   | Record<string, unknown>
   | ParametersAllowedTypes[];
 
-type Method<T> = keyof MethodsObj<T>;
-type Parameters = ParametersAllowedTypes[];
+export type Method<T> = keyof MethodsObj<T>;
+export type Parameters = ParametersAllowedTypes[];
 
 interface Data<TMethods, TSettings> {
   method: Method<TMethods>;
@@ -69,12 +71,12 @@ export type ShowResult<TMethods> = (
 ) => void;
 export type On<TMethods> = (
   method: Method<TMethods>,
-  callbackFn: (params: string) => void,
+  callbackFn: (params: Parameters | ParametersAllowedTypes) => void,
 ) => void;
 
 interface IFlow<TMethods, TSettings> {
   method: Method<TMethods>;
-  params: string;
+  params: Parameters | ParametersAllowedTypes;
   settings: TSettings;
   on: On<TMethods>;
   showResult: ShowResult<TMethods>;
@@ -120,11 +122,24 @@ export class Flow<TMethods, TSettings = Record<string, string>>
   }
 
   /**
+   * Returns only the first parameter if it is a string, a number or a boolean. Otherwise, returns an array of parameters.
+   *
    * @readonly
-   * @type {string}
+   * @type {Parameters | ParametersAllowedTypes}
    */
   get params() {
-    return this.data.parameters[0] as string;
+    const firstParam = this.data.parameters[0];
+    const secondParam = this.data.parameters[1];
+
+    if (
+      secondParam === undefined &&
+      (typeof firstParam == 'string' ||
+        typeof firstParam == 'number' ||
+        typeof firstParam == 'boolean')
+    )
+      return firstParam;
+
+    return this.data.parameters;
   }
 
   /**
@@ -144,7 +159,7 @@ export class Flow<TMethods, TSettings = Record<string, string>>
    */
   public on(
     method: keyof MethodsObj<TMethods>,
-    callbackFn: (params: string) => void,
+    callbackFn: (params: Parameters | ParametersAllowedTypes) => void,
   ) {
     this.methods[method] = callbackFn;
   }
