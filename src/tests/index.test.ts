@@ -3,25 +3,38 @@ import { expect } from 'chai';
 import { spy, assert } from 'sinon';
 
 import { DEFAULT_REQUEST, mockRequest, RequestObject } from './mock';
-import { Parameters, ParametersAllowedTypes } from '../index';
+import {
+  Flow,
+  IFlowPrivate,
+  JSONRPCResponse,
+  Parameters,
+  ParametersAllowedTypes,
+  Result,
+} from '../index';
 
 interface TestParamsArgs {
   request: RequestObject;
   expected: Parameters | ParametersAllowedTypes;
 }
 
+// interface IRewiredFlow<TMethods, TSettings> extends InstanceType<typeof Flow> {
+//   createResultObject: (result: JSONRPCResponse<TMethods>) => Result<TMethods>;
+// }
+
+type TRewiredFlow = IFlowPrivate<unknown, unknown>;
+
 describe('Flow Launcher Helper', () => {
-  let rewiredModule: ReturnType<typeof rewire>, rewiredFlow: any;
+  let rewiredModule: ReturnType<typeof rewire>, RewiredFlow: any;
 
   beforeEach(() => {
     rewiredModule = rewire('../index');
-    rewiredFlow = rewiredModule.__get__('Flow');
+    RewiredFlow = rewiredModule.__get__('Flow');
   });
 
   it('should return the correct parameters', () => {
     const testParams = ({ request, expected }: TestParamsArgs) => {
       mockRequest(request, rewiredModule);
-      const flow = new rewiredFlow();
+      const flow: TRewiredFlow = new RewiredFlow();
       const callback = spy();
 
       flow.on(request.method, callback);
@@ -61,7 +74,7 @@ describe('Flow Launcher Helper', () => {
 
   it('should call the callback function once', () => {
     mockRequest(DEFAULT_REQUEST, rewiredModule);
-    const flow = new rewiredFlow();
+    const flow: TRewiredFlow = new RewiredFlow();
     const callback = spy();
 
     flow.on(DEFAULT_REQUEST.method, callback);
@@ -79,7 +92,7 @@ describe('Flow Launcher Helper', () => {
       rewiredModule,
     );
 
-    const flow = new rewiredFlow();
+    const flow: TRewiredFlow = new RewiredFlow();
     const callback = spy();
 
     flow.on('query', callback);

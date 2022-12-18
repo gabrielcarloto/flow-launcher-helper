@@ -83,6 +83,14 @@ interface IFlow<TMethods, TSettings> {
   run: () => void;
 }
 
+export interface IFlowPrivate<TMethods, TSettings>
+  extends IFlow<TMethods, TSettings> {
+  methods: MethodsObj<TMethods>;
+  defaultIconPath: string | undefined;
+  data: Data<TMethods, TSettings>;
+  createResultObject: (result: JSONRPCResponse<TMethods>) => Result<TMethods>;
+}
+
 function isPrimitive(value: any): boolean {
   return (
     typeof value == 'string' ||
