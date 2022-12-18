@@ -52,7 +52,7 @@ export interface JSONRPCResponse<TMethods> {
   score?: number;
 }
 
-interface Result<TMethods> {
+export interface Result<TMethods> {
   Title: string;
   Subtitle?: string;
   JsonRPCAction: {
@@ -64,12 +64,20 @@ interface Result<TMethods> {
   score: number;
 }
 
+export type ShowResult<TMethods> = (
+  ...results: JSONRPCResponse<TMethods>[]
+) => void;
+export type On<TMethods> = (
+  method: Method<TMethods>,
+  callbackFn: (params: string) => void,
+) => void;
+
 interface IFlow<TMethods, TSettings> {
   method: Method<TMethods>;
   params: string;
   settings: TSettings;
-  on: (method: Method<TMethods>, callbackFn: (params: string) => void) => void;
-  showResult: (...results: JSONRPCResponse<TMethods>[]) => void;
+  on: On<TMethods>;
+  showResult: ShowResult<TMethods>;
   run: () => void;
 }
 
