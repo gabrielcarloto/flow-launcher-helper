@@ -28,7 +28,7 @@ type MethodsObj<T> = {
   ) => void;
 };
 
-type ParametersAllowedTypes =
+export type ParametersAllowedTypes =
   | string
   | number
   | boolean

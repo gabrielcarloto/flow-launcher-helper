@@ -3,6 +3,12 @@ import { expect } from 'chai';
 import { spy, assert } from 'sinon';
 
 import { DEFAULT_REQUEST, mockRequest, RequestObject } from './mock';
+import { Parameters, ParametersAllowedTypes } from '../index';
+
+interface TestParamsArgs {
+  request: RequestObject;
+  expected: Parameters | ParametersAllowedTypes;
+}
 
 describe('Flow Launcher Helper', () => {
   let rewiredModule: ReturnType<typeof rewire>, rewiredFlow: any;
@@ -13,7 +19,7 @@ describe('Flow Launcher Helper', () => {
   });
 
   it('should return the correct parameters', () => {
-    const testParams = (request: RequestObject) => {
+    const testParams = ({ request, expected }: TestParamsArgs) => {
       mockRequest(request, rewiredModule);
       const flow = new rewiredFlow();
       const callback = spy();
@@ -23,22 +29,34 @@ describe('Flow Launcher Helper', () => {
 
       const params = callback.args[0][0];
 
-      expect(params).to.eql(
-        Array.isArray(params) ? request.parameters : request.parameters[0],
-      );
+      expect(params).to.eql(expected);
     };
 
-    testParams({ method: 'query', parameters: ['param1'] });
-    testParams({ method: 'query', parameters: [10] });
-    testParams({ method: 'query', parameters: [true] });
-    testParams({
-      method: 'another_method',
-      parameters: [
-        42,
-        { param: 'test', another: ['test', 'param1'] },
-        'param2',
-      ],
-    });
+    const testCases: Array<TestParamsArgs> = [
+      {
+        request: { method: 'query', parameters: ['param1'] },
+        expected: 'param1',
+      },
+      { request: { method: 'query', parameters: [10] }, expected: 10 },
+      { request: { method: 'query', parameters: [true] }, expected: true },
+      {
+        request: {
+          method: 'another_method',
+          parameters: [
+            42,
+            { param: 'test', another: ['test', 'param1'] },
+            'param2',
+          ],
+        },
+        expected: [
+          42,
+          { param: 'test', another: ['test', 'param1'] },
+          'param2',
+        ],
+      },
+    ];
+
+    testCases.forEach((testCase) => testParams(testCase));
   });
 
   it('should call the callback function once', () => {
