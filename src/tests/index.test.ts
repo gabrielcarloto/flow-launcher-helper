@@ -3,23 +3,12 @@ import { expect } from 'chai';
 import { spy, assert } from 'sinon';
 
 import { DEFAULT_REQUEST, mockRequest, RequestObject } from './mock';
-import {
-  Flow,
-  IFlowPrivate,
-  JSONRPCResponse,
-  Parameters,
-  ParametersAllowedTypes,
-  Result,
-} from '../index';
+import { IFlowPrivate, Parameters, ParametersAllowedTypes } from '../types';
 
 interface TestParamsArgs {
   request: RequestObject;
   expected: Parameters | ParametersAllowedTypes;
 }
-
-// interface IRewiredFlow<TMethods, TSettings> extends InstanceType<typeof Flow> {
-//   createResultObject: (result: JSONRPCResponse<TMethods>) => Result<TMethods>;
-// }
 
 type TRewiredFlow = IFlowPrivate<unknown, unknown>;
 

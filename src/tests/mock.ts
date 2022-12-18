@@ -1,4 +1,4 @@
-import { Result, Parameters } from '../index';
+import { Result, Parameters } from '../types';
 import rewire from 'rewire';
 
 export const DEFAULT_REQUEST = {

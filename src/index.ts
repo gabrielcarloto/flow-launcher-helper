@@ -1,95 +1,12 @@
-type JSONRPCMethods =
-  | 'Flow.Launcher.ChangeQuery'
-  | 'Flow.Launcher.RestartApp'
-  | 'Flow.Launcher.SaveAppAllSettings'
-  | 'Flow.Launcher.CheckForNewUpdate'
-  | 'Flow.Launcher.ShellRun'
-  | 'Flow.Launcher.CloseApp'
-  | 'Flow.Launcher.HideApp'
-  | 'Flow.Launcher.ShowApp'
-  | 'Flow.Launcher.ShowMsg'
-  | 'Flow.Launcher.GetTranslation'
-  | 'Flow.Launcher.OpenSettingDialog'
-  | 'Flow.Launcher.GetAllPlugins'
-  | 'Flow.Launcher.StartLoadingBar'
-  | 'Flow.Launcher.StopLoadingBar'
-  | 'Flow.Launcher.ReloadAllPluginData'
-  | 'Flow.Launcher.CopyToClipboard'
-  | 'query';
-
-type Methods<T> = JSONRPCMethods | T;
-
-type MethodsObj<T> = {
-  [key in Methods<T> extends string
-    ? Methods<T>
-    : // eslint-disable-next-line @typescript-eslint/ban-types
-      JSONRPCMethods | (string & {})]: (
-    params: Parameters | ParametersAllowedTypes,
-  ) => void;
-};
-
-export type ParametersAllowedTypes =
-  | string
-  | number
-  | boolean
-  | Record<string, unknown>
-  | ParametersAllowedTypes[];
-
-export type Method<T> = keyof MethodsObj<T>;
-export type Parameters = ParametersAllowedTypes[];
-
-interface Data<TMethods, TSettings> {
-  method: Method<TMethods>;
-  parameters: Parameters;
-  settings: TSettings;
-}
-
-export interface JSONRPCResponse<TMethods> {
-  title: string;
-  subtitle?: string;
-  method?: Method<TMethods>;
-  params?: Parameters;
-  dontHideAfterAction?: boolean;
-  iconPath?: string;
-  score?: number;
-}
-
-export interface Result<TMethods> {
-  Title: string;
-  Subtitle?: string;
-  JsonRPCAction: {
-    method?: Method<TMethods>;
-    parameters: Parameters;
-    dontHideAfterAction: boolean;
-  };
-  IcoPath?: string;
-  score: number;
-}
-
-export type ShowResult<TMethods> = (
-  ...results: JSONRPCResponse<TMethods>[]
-) => void;
-export type On<TMethods> = (
-  method: Method<TMethods>,
-  callbackFn: (params: Parameters | ParametersAllowedTypes) => void,
-) => void;
-
-interface IFlow<TMethods, TSettings> {
-  method: Method<TMethods>;
-  params: Parameters | ParametersAllowedTypes;
-  settings: TSettings;
-  on: On<TMethods>;
-  showResult: ShowResult<TMethods>;
-  run: () => void;
-}
-
-export interface IFlowPrivate<TMethods, TSettings>
-  extends IFlow<TMethods, TSettings> {
-  methods: MethodsObj<TMethods>;
-  defaultIconPath: string | undefined;
-  data: Data<TMethods, TSettings>;
-  createResultObject: (result: JSONRPCResponse<TMethods>) => Result<TMethods>;
-}
+import {
+  Data,
+  IFlow,
+  JSONRPCResponse,
+  MethodsObj,
+  Parameters,
+  ParametersAllowedTypes,
+  Result,
+} from './types';
 
 function isPrimitive(value: any): boolean {
   return (
@@ -106,7 +23,7 @@ function isPrimitive(value: any): boolean {
  * @template TMethods - The type that defines the custom methods for the plugin.
  * @template TSettings - The type that defines the plugin's settings.
  */
-export class Flow<TMethods, TSettings = Record<string, string>>
+class Flow<TMethods, TSettings = Record<string, string>>
   implements IFlow<TMethods, TSettings>
 {
   private methods = {} as MethodsObj<TMethods>;
@@ -214,3 +131,5 @@ export class Flow<TMethods, TSettings = Record<string, string>>
     else throw new Error(`Method ${this.data.method} is not defined.`);
   }
 }
+
+export { Flow, JSONRPCResponse };
