@@ -3,7 +3,13 @@ import { expect } from 'chai';
 import { spy, assert } from 'sinon';
 
 import { DEFAULT_REQUEST, mockRequest, RequestObject } from './mock';
-import { IFlowPrivate, Parameters, ParametersAllowedTypes } from '../types';
+import {
+  IFlowPrivate,
+  JSONRPCResponse,
+  Parameters,
+  ParametersAllowedTypes,
+  Result,
+} from '../types';
 
 interface TestParamsArgs {
   request: RequestObject;
@@ -88,5 +94,36 @@ describe('Flow Launcher Helper', () => {
 
     assert.notCalled(callback);
     expect(flow.run).to.throw();
+  });
+
+  it('should create the correct result object', () => {
+    mockRequest(DEFAULT_REQUEST, rewiredModule);
+    const flow: TRewiredFlow = new RewiredFlow();
+
+    const response: JSONRPCResponse<unknown> = {
+      title: 'Testing Title',
+      subtitle: 'Testing Subtitle',
+      method: 'Flow.Launcher.ChangeQuery',
+      iconPath: 'path/to/icon',
+      params: ['Testing Param'],
+      dontHideAfterAction: true,
+      score: 50,
+    };
+
+    const expected: Result<unknown> = {
+      Title: 'Testing Title',
+      Subtitle: 'Testing Subtitle',
+      JsonRPCAction: {
+        method: 'Flow.Launcher.ChangeQuery',
+        parameters: ['Testing Param'],
+        dontHideAfterAction: true,
+      },
+      IcoPath: 'path/to/icon',
+      score: 50,
+    };
+
+    const result = flow.createResultObject(response);
+
+    expect(result).to.eql(expected);
   });
 });
