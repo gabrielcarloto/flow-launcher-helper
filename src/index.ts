@@ -83,6 +83,14 @@ interface IFlow<TMethods, TSettings> {
   run: () => void;
 }
 
+function isPrimitive(value: any): boolean {
+  return (
+    typeof value == 'string' ||
+    typeof value == 'number' ||
+    typeof value == 'boolean'
+  );
+}
+
 /**
  * A class that helps in the communication between the Flow Launcher app and a plugin.
  *
@@ -122,7 +130,7 @@ export class Flow<TMethods, TSettings = Record<string, string>>
   }
 
   /**
-   * Returns only the first parameter if it is a string, a number or a boolean. Otherwise, returns an array of parameters.
+   * If the first parameter is a primitive type, return it, otherwise return the entire array of parameters.
    *
    * @readonly
    * @type {Parameters | ParametersAllowedTypes}
@@ -131,13 +139,7 @@ export class Flow<TMethods, TSettings = Record<string, string>>
     const firstParam = this.data.parameters[0];
     const secondParam = this.data.parameters[1];
 
-    if (
-      secondParam === undefined &&
-      (typeof firstParam == 'string' ||
-        typeof firstParam == 'number' ||
-        typeof firstParam == 'boolean')
-    )
-      return firstParam;
+    if (!secondParam && isPrimitive(firstParam)) return firstParam;
 
     return this.data.parameters;
   }
