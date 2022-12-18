@@ -67,6 +67,21 @@ describe('Flow Launcher Helper', () => {
     testCases.forEach((testCase) => testParams(testCase));
   });
 
+  it('should return the correct settings', () => {
+    const mock: RequestObject = {
+      method: '',
+      parameters: [''],
+      settings: {
+        test_setting: 'setting1',
+        test_checked: true,
+      },
+    };
+
+    mockRequest(mock, rewiredModule);
+    const { settings }: TRewiredFlow = new RewiredFlow();
+    expect(settings).to.eql(mock.settings);
+  });
+
   it('should call the callback function once', () => {
     mockRequest(DEFAULT_REQUEST, rewiredModule);
     const flow: TRewiredFlow = new RewiredFlow();

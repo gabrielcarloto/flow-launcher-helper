@@ -9,6 +9,7 @@ export const DEFAULT_REQUEST = {
 export interface RequestObject {
   method: string;
   parameters: Parameters;
+  settings?: Record<string, string | number | boolean>;
 }
 
 export function mockRequest(
