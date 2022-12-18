@@ -1,6 +1,6 @@
 import rewire from 'rewire';
 import { expect } from 'chai';
-import { spy, assert } from 'sinon';
+import { spy, assert, match } from 'sinon';
 
 import { DEFAULT_REQUEST, mockRequest, RequestObject } from './mock';
 import {
@@ -10,6 +10,7 @@ import {
   ParametersAllowedTypes,
   Result,
 } from '../types';
+import { stub } from 'sinon';
 
 interface TestParamsArgs {
   request: RequestObject;
@@ -125,7 +126,7 @@ describe('Flow Launcher Helper', () => {
       score: 50,
     };
 
-    const expected: Result<unknown> = {
+    const expectedCreatedResult: Result<unknown> = {
       Title: 'Testing Title',
       Subtitle: 'Testing Subtitle',
       JsonRPCAction: {
@@ -137,8 +138,18 @@ describe('Flow Launcher Helper', () => {
       score: 50,
     };
 
-    const result = flow.createResultObject(response);
+    const expectedShowResult = JSON.stringify({
+      result: [expectedCreatedResult],
+    });
 
-    expect(result).to.eql(expected);
+    const createdResult = flow.createResultObject(response);
+    const logSpy = stub(console, 'log').callsFake(() => {});
+
+    flow.showResult(response);
+
+    const successfullyShownResult = logSpy.calledOnceWith(expectedShowResult);
+
+    expect(createdResult).to.eql(expectedCreatedResult);
+    expect(successfullyShownResult).to.true;
   });
 });
