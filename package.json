@@ -11,7 +11,7 @@
     "test": "mocha --reporter spec --require ts-node/register src/tests/*.test.ts",
     "prepublishOnly": "npm run lint",
     "prepare": "npm run build",
-    "preversion": "npm run lint",
+    "preversion": "npm run lint && npm run test",
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags"
   },
