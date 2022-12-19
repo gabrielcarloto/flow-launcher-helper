@@ -134,7 +134,9 @@ describe('Flow Launcher Helper', () => {
     });
 
     const createdResult = flow.createResultObject(response);
-    const logSpy = stub(console, 'log').callsFake(() => {});
+    const logSpy = stub(console, 'log').callsFake(() => {
+      /* do nothing */
+    });
 
     flow.showResult(response);
 
