@@ -89,7 +89,7 @@ export interface IFlow<TMethods, TSettings> {
   run: () => void;
 }
 
-export interface IFlowPrivate<TMethods, TSettings>
+export interface IFlowPrivate<TMethods = unknown, TSettings = unknown>
   extends IFlow<TMethods, TSettings> {
   methods: MethodsObj<TMethods>;
   defaultIconPath: string | undefined;

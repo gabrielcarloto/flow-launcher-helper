@@ -1,17 +1,14 @@
 import rewire from 'rewire';
 import { expect } from 'chai';
-import { spy, assert } from 'sinon';
+import { spy, assert, stub } from 'sinon';
 
 import { DEFAULT_REQUEST, mockRequest, RequestObject } from './mock';
 import { IFlowPrivate, JSONRPCResponse, Params, Result } from '../types';
-import { stub } from 'sinon';
 
 interface TestParamsArgs {
   request: RequestObject;
   expected: Params;
 }
-
-type TRewiredFlow = IFlowPrivate<unknown, unknown>;
 
 describe('Flow Launcher Helper', () => {
   let rewiredModule: ReturnType<typeof rewire>, RewiredFlow: any;
@@ -24,7 +21,7 @@ describe('Flow Launcher Helper', () => {
   it('should return the correct parameters', () => {
     const testParams = ({ request, expected }: TestParamsArgs) => {
       mockRequest(request, rewiredModule);
-      const flow: TRewiredFlow = new RewiredFlow();
+      const flow: IFlowPrivate = new RewiredFlow();
       const callback = spy();
 
       flow.on(request.method, callback);
@@ -73,13 +70,13 @@ describe('Flow Launcher Helper', () => {
     };
 
     mockRequest(mock, rewiredModule);
-    const { settings }: TRewiredFlow = new RewiredFlow();
+    const { settings }: IFlowPrivate = new RewiredFlow();
     expect(settings).to.eql(mock.settings);
   });
 
   it('should call the callback function once', () => {
     mockRequest(DEFAULT_REQUEST, rewiredModule);
-    const flow: TRewiredFlow = new RewiredFlow();
+    const flow: IFlowPrivate = new RewiredFlow();
     const callback = spy();
 
     flow.on(DEFAULT_REQUEST.method, callback);
@@ -97,7 +94,7 @@ describe('Flow Launcher Helper', () => {
       rewiredModule,
     );
 
-    const flow: TRewiredFlow = new RewiredFlow();
+    const flow: IFlowPrivate = new RewiredFlow();
     const callback = spy();
 
     flow.on('query', callback);
@@ -108,7 +105,7 @@ describe('Flow Launcher Helper', () => {
 
   it('should create the correct result object', () => {
     mockRequest(DEFAULT_REQUEST, rewiredModule);
-    const flow: TRewiredFlow = new RewiredFlow();
+    const flow: IFlowPrivate = new RewiredFlow();
 
     const response: JSONRPCResponse<unknown> = {
       title: 'Testing Title',
