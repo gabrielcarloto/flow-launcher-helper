@@ -53,8 +53,10 @@ class Flow<TMethods, TSettings = Record<string, string>>
   }
 
   /**
+   * Use the `param` argument in the `callbackFn` of the `on` method instead, or the `requestParams` method.
+   *
    * @readonly
-   * @deprecated Use the `queryParams` method.
+   * @deprecated
    */
   get params() {
     return this.data.parameters[0] as string;
