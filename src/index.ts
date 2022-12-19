@@ -53,15 +53,23 @@ class Flow<TMethods, TSettings = Record<string, string>>
   }
 
   /**
-   * If the first parameter is a primitive type, return it, otherwise return the entire array of parameters.
+   * @readonly
+   * @deprecated Use the `queryParams` method.
+   */
+  get params() {
+    return this.data.parameters[0] as string;
+  }
+
+  /**
+   * If there is only a parameter of primitive type, returns it, otherwise returns an array of parameters.
    *
    * @readonly
    */
-  get params() {
-    const firstParam = this.data.parameters[0];
+  get requestParams() {
+    const firstParam = this.data.parameters[0] as string | number | boolean;
     const hasJustOneItem = this.data.parameters.length == 1;
 
-    if (hasJustOneItem && isPrimitive(firstParam)) return firstParam as Params;
+    if (hasJustOneItem && isPrimitive(firstParam)) return firstParam;
 
     return this.data.parameters;
   }
@@ -127,7 +135,7 @@ class Flow<TMethods, TSettings = Record<string, string>>
    */
   public run() {
     if (this.data.method in this.methods)
-      this.methods[this.data.method](this.params);
+      this.methods[this.data.method](this.requestParams);
     else throw new Error(`Method ${this.data.method} is not defined.`);
   }
 }

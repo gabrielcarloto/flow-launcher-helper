@@ -82,7 +82,8 @@ export type On<TMethods> = (
 
 export interface IFlow<TMethods, TSettings> {
   method: Method<TMethods>;
-  params: Params;
+  params: string;
+  requestParams: Params;
   settings: TSettings;
   on: On<TMethods>;
   showResult: ShowResult<TMethods>;
