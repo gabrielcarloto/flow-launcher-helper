@@ -4,7 +4,7 @@
 
 ### Added
 
-- Now you can access the params used in a method directly from the callback function (`on('method', (params) => ...)`). You can also add types to the params in the `on` method. Currently, the only really type safe way to do this is by passing a type to the generic, instead of directly typing `params`, in this way: `on<MyType>('method', (params) => ...)`. Also, you can't pass interfaces, just types.
+- Now you can access the params used in a method directly from the callback function (`on('method', (params) => ...)`). You can also add types to the params in the `on` method (`on('method', (params: string) => ...)`). Note that you can't pass interfaces in this case, just types.
 - There is a new method `requestParams` that returns the parameters of the current method. The method `params` is now deprecated, as it would return just the first parameter as a string. However, it is highly recommended to get the current params via the `params` argument in the callback function, as mentioned above.
 - When a method that does not exist is called, an error will be thrown, indicating the misspelled method.
 
