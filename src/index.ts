@@ -4,11 +4,10 @@ import {
   JSONRPCResponse,
   MethodsObj,
   Params,
-  ParametersAllowedTypes,
   Result,
 } from './types';
 
-function isPrimitive(value: any): boolean {
+function isPrimitive(value: unknown): boolean {
   return (
     typeof value == 'string' ||
     typeof value == 'number' ||
@@ -132,3 +131,5 @@ class Flow<TMethods, TSettings = Record<string, string>>
     else throw new Error(`Method ${this.data.method} is not defined.`);
   }
 }
+
+export { Flow, JSONRPCResponse };
