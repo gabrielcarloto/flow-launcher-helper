@@ -29,7 +29,7 @@ export type MethodsObj<TMethods> = {
   [key in Methods<TMethods> extends string
     ? Methods<TMethods>
     : // eslint-disable-next-line @typescript-eslint/ban-types
-      JSONRPCMethods | (string & {})]: (params: any) => void; // TODO: remove any
+      JSONRPCMethods | (string & {})]: (params: any) => void;
 };
 
 export type ParametersAllowedTypes =
