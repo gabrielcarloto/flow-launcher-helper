@@ -8,7 +8,7 @@
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint .",
-    "test": "nyc --reporter=lcov mocha --reporter spec --require ts-node/register src/tests/*.test.ts",
+    "test": "nyc --reporter=lcov --reporter=text-summary mocha --reporter spec --require ts-node/register src/tests/*.test.ts",
     "prepublishOnly": "npm run lint",
     "prepare": "npm run build",
     "preversion": "npm run lint && npm run test",
