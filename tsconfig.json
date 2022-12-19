@@ -7,8 +7,7 @@
     "noImplicitAny": true,
     "noEmitOnError": true,
     "declaration": true,
-    "strict": true,
-    "removeComments": true
+    "strict": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "src/tests", ".nyc_output"]
