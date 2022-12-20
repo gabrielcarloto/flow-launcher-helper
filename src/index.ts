@@ -1,19 +1,11 @@
 import {
   Data,
+  FlowParameters,
   IFlow,
   JSONRPCResponse,
   MethodsObj,
-  Params,
   Result,
 } from './types';
-
-function isPrimitive(value: unknown): boolean {
-  return (
-    typeof value == 'string' ||
-    typeof value == 'number' ||
-    typeof value == 'boolean'
-  );
-}
 
 /**
  * A class that helps in the communication between the Flow Launcher app and a plugin.
@@ -63,16 +55,11 @@ class Flow<TMethods, TSettings = Record<string, string>>
   }
 
   /**
-   * If there is only a parameter of primitive type, returns it, otherwise returns an array of parameters.
+   * Returns the array of parameters sent from Flow Launcher.
    *
    * @readonly
    */
   get requestParams() {
-    const firstParam = this.data.parameters[0] as string | number | boolean;
-    const hasJustOneItem = this.data.parameters.length == 1;
-
-    if (hasJustOneItem && isPrimitive(firstParam)) return firstParam;
-
     return this.data.parameters;
   }
 
@@ -91,7 +78,7 @@ class Flow<TMethods, TSettings = Record<string, string>>
    * @param method The method to register.
    * @param callbackFn Receives the params as an argument.
    */
-  public on<T extends Params>(
+  public on<T extends FlowParameters>(
     method: keyof MethodsObj<TMethods>,
     callbackFn: (params: T) => void,
   ) {

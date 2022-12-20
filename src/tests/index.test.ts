@@ -35,10 +35,10 @@ describe('Flow Launcher Helper', () => {
     const testCases: Array<TestParamsArgs> = [
       {
         request: { method: 'query', parameters: ['param1'] },
-        expected: 'param1',
+        expected: ['param1'],
       },
-      { request: { method: 'query', parameters: [10] }, expected: 10 },
-      { request: { method: 'query', parameters: [true] }, expected: true },
+      { request: { method: 'query', parameters: [10] }, expected: [10] },
+      { request: { method: 'query', parameters: [true] }, expected: [true] },
       {
         request: {
           method: 'another_method',
