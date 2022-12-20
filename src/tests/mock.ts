@@ -19,19 +19,3 @@ export function mockRequest(
   const mock = JSON.stringify(requestObject);
   rewiredModule.__set__({ process: { argv: ['-', '-', mock] } });
 }
-
-export function simulateFlowLauncherRequest(
-  response: string | null,
-): RequestObject {
-  if (!response) return DEFAULT_REQUEST;
-
-  const {
-    result: {
-      JsonRPCAction: { method, parameters },
-    },
-  } = JSON.parse(response) as { result: Result<unknown> };
-
-  if (method == 'test_method') return { method, parameters };
-
-  return DEFAULT_REQUEST;
-}

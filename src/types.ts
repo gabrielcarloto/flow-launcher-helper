@@ -90,7 +90,8 @@ export interface IFlow<TMethods extends MethodsObjGeneric, TSettings> {
 }
 
 export interface IFlowPrivate<
-  TMethods extends MethodsObjGeneric,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  TMethods extends MethodsObjGeneric = string & {},
   TSettings = unknown,
 > extends IFlow<TMethods, TSettings> {
   methods: MethodsObj<TMethods>;

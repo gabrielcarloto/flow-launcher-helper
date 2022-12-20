@@ -107,7 +107,7 @@ describe('Flow Launcher Helper', () => {
     mockRequest(DEFAULT_REQUEST, rewiredModule);
     const flow: IFlowPrivate = new RewiredFlow();
 
-    const response: JSONRPCResponse<unknown> = {
+    const response: JSONRPCResponse<''> = {
       title: 'Testing Title',
       subtitle: 'Testing Subtitle',
       method: 'Flow.Launcher.ChangeQuery',
@@ -117,7 +117,7 @@ describe('Flow Launcher Helper', () => {
       score: 50,
     };
 
-    const expectedCreatedResult: Result<unknown> = {
+    const expectedCreatedResult: Result<''> = {
       Title: 'Testing Title',
       Subtitle: 'Testing Subtitle',
       JsonRPCAction: {
