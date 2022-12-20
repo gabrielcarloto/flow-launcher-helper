@@ -24,12 +24,11 @@ type FlowLauncherInternMethods = PrependFlowLauncher<
 export type JSONRPCMethods = FlowLauncherInternMethods | 'query';
 
 export type Methods<T> = JSONRPCMethods | T;
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type MethodsObjGeneric = string & {};
 
-export type MethodsObj<TMethods> = {
-  [key in Methods<TMethods> extends string
-    ? Methods<TMethods>
-    : // eslint-disable-next-line @typescript-eslint/ban-types
-      JSONRPCMethods | (string & {})]: (params: any) => void;
+export type MethodsObj<TMethods extends MethodsObjGeneric> = {
+  [key in Methods<TMethods>]: (params: any) => void;
 };
 
 export type ParametersAllowedTypes =
@@ -39,17 +38,17 @@ export type ParametersAllowedTypes =
   | Record<string, unknown>
   | ParametersAllowedTypes[];
 
-export type Method<T> = keyof MethodsObj<T>;
+export type Method<T extends MethodsObjGeneric> = keyof MethodsObj<T>;
 export type FlowParameters = ParametersAllowedTypes[];
 export type Params = FlowParameters | string | number | boolean;
 
-export interface Data<TMethods, TSettings> {
+export interface Data<TMethods extends MethodsObjGeneric, TSettings> {
   method: Method<TMethods>;
   parameters: FlowParameters;
   settings: TSettings;
 }
 
-export interface JSONRPCResponse<TMethods> {
+export interface JSONRPCResponse<TMethods extends MethodsObjGeneric> {
   title: string;
   subtitle?: string;
   method?: Method<TMethods>;
@@ -59,7 +58,7 @@ export interface JSONRPCResponse<TMethods> {
   score?: number;
 }
 
-export interface Result<TMethods> {
+export interface Result<TMethods extends MethodsObjGeneric> {
   Title: string;
   Subtitle?: string;
   JsonRPCAction: {
@@ -71,16 +70,16 @@ export interface Result<TMethods> {
   score: number;
 }
 
-export type ShowResult<TMethods> = (
+export type ShowResult<TMethods extends MethodsObjGeneric> = (
   ...results: JSONRPCResponse<TMethods>[]
 ) => void;
 
-export type On<TMethods> = (
+export type On<TMethods extends MethodsObjGeneric> = (
   method: Method<TMethods>,
   callbackFn: (params: Params) => void,
 ) => void;
 
-export interface IFlow<TMethods, TSettings> {
+export interface IFlow<TMethods extends MethodsObjGeneric, TSettings> {
   method: Method<TMethods>;
   params: string;
   requestParams: FlowParameters;
@@ -90,8 +89,10 @@ export interface IFlow<TMethods, TSettings> {
   run: () => void;
 }
 
-export interface IFlowPrivate<TMethods = unknown, TSettings = unknown>
-  extends IFlow<TMethods, TSettings> {
+export interface IFlowPrivate<
+  TMethods extends MethodsObjGeneric,
+  TSettings = unknown,
+> extends IFlow<TMethods, TSettings> {
   methods: MethodsObj<TMethods>;
   defaultIconPath: string | undefined;
   data: Data<TMethods, TSettings>;

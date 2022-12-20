@@ -4,6 +4,7 @@ import {
   IFlow,
   JSONRPCResponse,
   MethodsObj,
+  MethodsObjGeneric,
   Result,
 } from './types';
 
@@ -14,8 +15,10 @@ import {
  * @template TMethods - The type that defines the custom methods for the plugin.
  * @template TSettings - The type that defines the plugin's settings.
  */
-class Flow<TMethods, TSettings = Record<string, string>>
-  implements IFlow<TMethods, TSettings>
+class Flow<
+  TMethods extends MethodsObjGeneric,
+  TSettings = Record<string, string>,
+> implements IFlow<TMethods, TSettings>
 {
   private methods = {} as MethodsObj<TMethods>;
   private defaultIconPath: string | undefined;
