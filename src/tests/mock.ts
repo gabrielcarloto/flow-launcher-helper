@@ -1,4 +1,4 @@
-import { Result, FlowParameters } from '../types';
+import { FlowParameters } from '../types';
 import rewire from 'rewire';
 
 export const DEFAULT_REQUEST = {
