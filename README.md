@@ -15,11 +15,11 @@ I recommend you read the [Flow docs](https://www.flowlauncher.com/docs/#/nodejs-
 ```js
 import { Flow } from 'flow-launcher-helper';
 
-const { params, on, showResult, run } = new Flow();
+const { on, showResult, run } = new Flow();
 
-on('query', () => {
+on('query', (params) => {
   showResult({
-    title: 'Hello World Typescript',
+    title: 'Hello World',
     subtitle: `Showing your query parameters: ${params}. Click to open Flow's website`,
     method: 'do_something_for_query',
     params: ['https://github.com/Flow-Launcher/Flow.Launcher'],
@@ -44,12 +44,14 @@ run();
 #### Methods
 
 - `method` — `string`: current method.
-- `params` — `string`: current parameters.
+- `requestParams` - `FlowParameters`: array of parameters sent from Flow.
 - `settings` — `object`: plugin settings.
-- `on` — `function`: receives a method (string) and a callback function that will be executed when the method matches the current method.
-- `showResult` — `function`: receives an array of results, where you specify the title, subtitle, method, params and icon path, and logs the data to be displayed in Flow.
+- `on` — `(params: T extends FlowParameters) => void`: receives a method (string) and a callback function that will be executed when the method matches the current method.
+- `showResult` — `(...results: JSONRPCResponse<TMethods>[]) => void`: receives an array of results, where you specify the title, subtitle, method, params and icon path, and logs the data to be displayed in Flow.
 - `run` — `function`: runs the current method. You should call this function at the end of your script, or after all the `on` functions have been called.
-
+- ~~`params` — `string`: current parameters.~~
+  - Note: it is no longer recommended to get the params from this method, as it returns only the first parameter as a string.
+  
 ##### Typescript
 
 If you're writing a plugin in Typescript, you can add types to `method` and `settings`.

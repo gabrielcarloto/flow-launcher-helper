@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.2.0 (beta)
+## 2.2.0 
 
 ### Added
 
