@@ -12,7 +12,7 @@ npm install flow-launcher-helper
 
 I'm no longer using Windows, having moved to Linux, so this project is no longer actively maintained.
 
-Looking back, there are definitely things I would do differently, but building this library was an interesting challenge and a valuable learning experience. I'm happy to see plugins built on top of it, as well as projects inspired by it — whether they build on the original approach or take things in a completely different direction with an API that better suits their needs.
+Looking back, there are definitely things I would do differently, but building this library was an interesting challenge and a valuable learning experience. I'm happy to see plugins built on top of it, as well as projects inspired by it, whether they build on the original approach or take things in a completely different direction with an API that better suits their needs.
 
 If you're looking for an alternative, check out [flow-plugin](https://github.com/DrafaKiller/FlowPlugin-ts).
 
